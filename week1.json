@@ -1,0 +1,41 @@
+{
+    "Resources": {
+       "EC2Instance": {
+          "Type": "AWS::EC2::Instance",
+          "Properties": {
+             "InstanceType": "t2.micro",
+             "ImageId": "ami-0aa7d40eeae50c9a9",
+             "KeyName": "devops100days",
+             "MinCount": "10",
+             "MaxCount": "10",
+             "SubnetId": {
+                "Ref": "SubnetID"
+             }
+          }
+       },
+       "SubnetID": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+             "CidrBlock": "10.0.0.0/16",
+             "VpcId": {
+                "Ref": "VPCID"
+             }
+          }
+       },
+       "VPCID": {
+          "Type": "AWS::EC2::VPC",
+          "Properties": {
+             "CidrBlock": "10.0.0.0/16"
+          }
+       }
+    },
+    "Outputs": {
+       "InstanceIds": {
+          "Value": {
+             "Ref": "EC2Instance"
+          },
+          "Description": "The EC2 instance IDs"
+       }
+    }
+ }
+ 
