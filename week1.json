@@ -38,4 +38,23 @@
        }
     }
  }
+{
+
+"Resources": {
+     "InternetGateway": {
+       "Type": "AWS::EC2::InternetGateway"
+     },
+     "InternetGatewayAttachment": {
+       "Type": "AWS::EC2::VPCGatewayAttachment",
+       "Properties": {
+         "VpcId": {
+           "Ref": "VpcId"
+         },
+         "InternetGatewayId": {
+           "Ref": "InternetGateway"
+         }
+       }
+     }
+   }
+
  
