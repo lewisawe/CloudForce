@@ -1,95 +1,126 @@
 {
-    "Resources": {
-       "EC2Instance": {
-          "Type": "AWS::EC2::Instance",
-          "Properties": {
-             "InstanceType": "t2.micro",
-             "ImageId": "ami-0aa7d40eeae50c9a9",
-             "KeyName": "devops100days",
-             "MinCount": "10",
-             "MaxCount": "10",
-             "SubnetId": {
-                "Ref": "SubnetID"
-             }
-          }
+   "AWSTemplateFormatVersion": "2010-09-09",
+   "Description": "Launch 10 EC2 instances and set up an Apache web server within a VPC.",
+   "Resources": {
+       "VPC": {
+           "Type": "AWS::EC2::VPC",
+           "Properties": {
+               "CidrBlock": "10.0.0.0/16",
+               "InstanceTenancy": "default",
+               "EnableDnsSupport": true,
+               "EnableDnsHostnames": true
+           }
        },
-       "SubnetID": {
-          "Type": "AWS::EC2::Subnet",
-          "Properties": {
-             "CidrBlock": "10.0.0.0/16",
-             "VpcId": {
-                "Ref": "VPCID"
-             }
-          }
+       "InternetGateway": {
+           "Type": "AWS::EC2::InternetGateway",
+           "Properties": {}
        },
-       "VPCID": {
-          "Type": "AWS::EC2::VPC",
-          "Properties": {
-             "CidrBlock": "10.0.0.0/16"
-          }
-       }
-    },
-    "Outputs": {
-       "InstanceIds": {
-          "Value": {
-             "Ref": "EC2Instance"
-          },
-          "Description": "The EC2 instance IDs"
-       }
-    }
- }
-{
+       "VPCGatewayAttachment": {
+           "Type": "AWS::EC2::VPCGatewayAttachment",
+           "Properties": {
+               "VpcId": {
+                   "Ref": "VPC"
+               },
+               "InternetGatewayId": {
+                   "Ref": "InternetGateway"
+               }
+           }
+       },
+       "Subnet": {
+           "Type": "AWS::EC2::Subnet",
+           "Properties": {
+               "VpcId": {
+                   "Ref": "VPC"
+               },
+               "CidrBlock": "10.0.0.0/24"
+           }
+       },
+       "SecurityGroup": {
+           "Type": "AWS::EC2::SecurityGroup",
+           "Properties": {
+               "GroupName": "WebServerSG",
+               "GroupDescription": "Security group for web server instances",
+               "VpcId": {
+                   "Ref": "VPC"
+               },
+               "SecurityGroupIngress": [
+                   {
+                       "IpProtocol": "tcp",
+                       "FromPort": 80,
+                       "ToPort": 80,
+                       "CidrIp": "0.0.0.0/0"
+                   }
+               ]
+           }
+       },
+       "LaunchConfig": {
+           "Type": "AWS::AutoScaling::LaunchConfiguration",
+           "Properties": {
+               "ImageId": "ami-0c55b159cbfafe1f0",
+               "InstanceType": "t2.micro",
+               "KeyName": "myKeyPair",
+               "SecurityGroups": [
+                   {
+                       "Ref": "SecurityGroup"
+                   }
+               ],
+               "UserData": {
+                   "Fn::Base64": {
+                       "Fn::Sub": [
+                           "#!/bin/bash\nyum update -y\nyum install -y httpd\nservice httpd start\nchkconfig httpd on",
+                           {}
+                       ]
+                   }
+               }
+           }
+       },
+       "AutoScalingGroup": {
+           "Type": "AWS::AutoScaling::AutoScalingGroup",
+           "Properties": {
+               "VPCZoneIdentifier": [
+                   {
+                       "Ref": "Subnet"
+                   }
 
-{
-     "InternetGateway": {
-       "Type": "AWS::EC2::InternetGateway"
-     },
-     "InternetGatewayAttachment": {
-       "Type": "AWS::EC2::VPCGatewayAttachment",
-       "Properties": {
-         "VpcId": {
-           "Ref": "VpcId"
-         },
-         "InternetGatewayId": {
-           "Ref": "InternetGateway"
-         }
-       }
-     }
-   }
-
-   {
-      "AWSTemplateFormatVersion": "2010-09-09",
-      "Resources": {
-          "MyLoadBalancer": {
-              "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
-              "Properties": {
-                  "AvailabilityZones": [
-                      "us-west-2a",
-                      "us-west-2b",
-                      "us-west-2c"
-                  ],
-                  "Listeners": [
-                      {
-                          "LoadBalancerPort": "80",
-                          "InstancePort": "80",
-                          "Protocol": "HTTP"
+                   
+               ],
+               "LaunchConfigurationName": {
+                   "Ref": "LaunchConfig"
+               },
+               "MinSize": "10",
+               "DBInstance": {
+                  "Type": "AWS::RDS::DBInstance",
+                  "Properties": {
+                      "DBInstanceIdentifier": "myDBInstance",
+                      "Engine": "MySQL",
+                      "DBName": "myDB",
+                      "MasterUsername": "admin",
+                      "MasterUserPassword": "adminpassword",
+                      "VPCSecurityGroups": [
+                          {
+                              "Ref": "SecurityGroup"
+                          }
+                      ],
+                      "DBInstanceClass": "db.t2.micro",
+                      "AllocatedStorage": "5",
+                      "VPCId": {
+                          "Ref": "VPC"
+                      },
+                      "DBSubnetGroupName": {
+                          "Ref": "DBSubnetGroup"
                       }
-                  ],
-                  "HealthCheck": {
-                      "Target": "HTTP:80/health",
-                      "HealthyThreshold": "3",
-                      "UnhealthyThreshold": "5",
-                      "Interval": "30",
-                      "Timeout": "5"
-                  },
-                  "Tags": [
-                      {
-                          "Key": "Name",
-                          "Value": "MyLoadBalancer"
-                      }
-                  ]
+                  }
+              },
+              "DBSubnetGroup": {
+                  "Type": "AWS::RDS::DBSubnetGroup",
+                  "Properties": {
+                      "DBSubnetGroupName": "myDBSubnetGroup",
+                      "DBSubnetIds": [
+                          {
+                              "Ref": "Subnet"
+                          }
+                      ],
+                      "Description": "My DB Subnet Group"
+                  }
               }
-          }
-      }
-  }
-  
+      
