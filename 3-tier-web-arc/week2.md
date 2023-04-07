@@ -82,8 +82,15 @@ Create Private Route Tables
 aws ec2 create-route-table --vpc-id vpc-04e49362baefd6887
 ```
 
-Create NAT Gateway
+Create a web Server
 
+
+add to user data
 ````
-
+#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Designing a 3 tier Aws Architecture </h1>" > /var/www/html/index.html
 ```
