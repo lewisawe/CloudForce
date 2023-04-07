@@ -64,3 +64,26 @@ aws ec2 create-subnet \
     --tag-specifications ResourceType=subnet,Tags='[{Key=Name,Value="PublicWebServerVPC"}]'
 ```
 
+Create a Internet Gateway
+
+```
+aws ec2 create-internet-gateway \
+    --tag-specifications ResourceType=internet-gateway,Tags='[{Key=Name,Value=cloudforce-igw}]'
+```
+Attach the IGW to our VPC
+
+```
+aws ec2 attach-internet-gateway --vpc-id "vpc-04e49362baefd6887" --internet-gateway-id "igw-0252d45a6bd3b915f" --region us-east-1
+```
+
+Create Private Route Tables 
+
+```
+aws ec2 create-route-table --vpc-id vpc-04e49362baefd6887
+```
+
+Create NAT Gateway
+
+````
+
+```
