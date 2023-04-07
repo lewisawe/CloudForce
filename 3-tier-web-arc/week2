@@ -1,0 +1,59 @@
+# Create a 3 tier web artchitecture
+
+Create a VPC
+```
+aws ec2 create-vpc \
+    --cidr-block 10.1.0.0/22 \
+    --tag-specification ResourceType=vpc,Tags=[{Key=Name,Value=CloudForceVPC}]
+```
+
+Create Subnets
+
+Create Public Subnet AZ 1
+```
+aws ec2 create-subnet \
+    --vpc-id CloudForceVPC \
+    --cidr-block 10.1.0.0/26 \
+    --tag-specifications ResourceType=subnet,Tags=[{Key=Name,Value=my-ipv4-only-subnet}]
+```
+
+Create Public Subnet AZ 2
+```
+aws ec2 create-subnet \
+    --vpc-id CloudForceVPC \
+    --cidr-block 10.1.0.0/26 \
+    --tag-specifications ResourceType=subnet,Tags=[{Key=Name,Value=my-ipv4-only-subnet}]
+```
+
+Create Private App Server
+```
+aws ec2 create-subnet \
+    --vpc-id CloudForceVPC \
+    --cidr-block 10.1.0.0/26 \
+    --tag-specifications ResourceType=subnet,Tags=[{Key=Name,Value=my-ipv4-only-subnet}]
+```
+
+Create Private App Server
+```
+aws ec2 create-subnet \
+    --vpc-id CloudForceVPC \
+    --cidr-block 10.1.0.0/26 \
+    --tag-specifications ResourceType=subnet,Tags=[{Key=Name,Value=my-ipv4-only-subnet}]
+```
+
+Create Private Rds Server
+```
+aws ec2 create-subnet \
+    --vpc-id CloudForceVPC \
+    --cidr-block 10.1.0.0/26 \
+    --tag-specifications ResourceType=subnet,Tags=[{Key=Name,Value=my-ipv4-only-subnet}]
+```
+
+Create Private RDS Server
+```
+aws ec2 create-subnet \
+    --vpc-id CloudForceVPC \
+    --cidr-block 10.1.0.0/26 \
+    --tag-specifications ResourceType=subnet,Tags=[{Key=Name,Value=my-ipv4-only-subnet}]
+```
+
