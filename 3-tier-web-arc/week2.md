@@ -68,7 +68,7 @@ Create a Internet Gateway
 
 ```
 aws ec2 create-internet-gateway \
-    --tag-specifications ResourceType=internet-gateway,Tags='[{Key=Name,Value=cloudforce-igw}]'
+    --tag-specifications ResourceType=internet-gateway,Tags='[{Key=Name,Value="cloudforce-igw"}]'
 ```
 Attach the IGW to our VPC
 
@@ -82,15 +82,29 @@ Create Private Route Tables
 aws ec2 create-route-table --vpc-id vpc-04e49362baefd6887
 ```
 
-Create a web Server
+Create a web Server in both AZ1 and AZ2
 
-
-add to user data
-````
-#!/bin/bash
-yum update -y
-yum install -y httpd
-systemctl start httpd
-systemctl enable httpd
-echo "<h1>Designing a 3 tier Aws Architecture </h1>" > /var/www/html/index.html
 ```
+aws ec2 run-instances \
+--image-id ami-06e46074ae430fba6 \
+--count 1 \
+--instance-type t2.micro \
+--key-name cloudforce \
+--subnet-id subnet-0e902686c4d2890d7 \
+--security-group-ids sg-0bbc0431234c68fcd \
+--tag-specifications ResourceType=instance,Tags='[{Key=Name,Value="cloudforce-webserver2"}]' \
+--user-data https://clouduserdata254.s3.amazonaws.com/user-data.txt
+
+```
+
+Create an App server in both AZs again
+```
+aws ec2 run-instances \
+--image-id ami-0c55b159cbfafe1f0 \
+--count 1 \
+--instance-type t2.micro \
+--key-name my-key-pair \
+--output text --query 'GroupId') \
+--subnet-id subnet-0123456789abcdef \
+```
+
