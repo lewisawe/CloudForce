@@ -51,6 +51,7 @@ Create Private Rds Server
 aws ec2 create-subnet \
     --vpc-id vpc-04e49362baefd6887 \
     --cidr-block 10.1.2.128/26 \
+    --availability-zone us-east-1a \
     --tag-specifications ResourceType=subnet,Tags='[{Key=Name,Value="PublicWebServerVPC"}]'
 ```
 
@@ -59,6 +60,7 @@ Create Private RDS Server
 aws ec2 create-subnet \
     --vpc-id vpc-04e49362baefd6887 \
     --cidr-block 10.1.2.192/26 \
+    --availability-zone us-east-1b \
     --tag-specifications ResourceType=subnet,Tags='[{Key=Name,Value="PublicWebServerVPC"}]'
 ```
 
