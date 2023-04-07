@@ -1,6 +1,7 @@
 # Create a 3 tier web artchitecture
 
 Create a VPC
+
 ```
 aws ec2 create-vpc \
     --cidr-block 10.1.0.0/22 \
