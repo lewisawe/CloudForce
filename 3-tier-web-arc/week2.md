@@ -16,7 +16,7 @@ aws ec2 create-subnet \
     --vpc-id vpc-04e49362baefd6887 \
     --cidr-block 10.1.0.0/26 \
     --availability-zone us-east-1a \
-    --tag-specifications ResourceType=subnet,Tags='[{Key=Name,Value="PublicWebServerVPC"}]'
+    --tag-specifications ResourceType=subnet,Tags='[{Key=Name,Value="PublicWebServerVPC2"}]'
 ```
 
 Create Public Subnet AZ2
