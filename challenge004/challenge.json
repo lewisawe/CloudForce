@@ -100,3 +100,22 @@ Resources:
 
   SecurityGroupSSH:
     Type: AWS::EC2::SecurityGroup
+
+  MyInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0c55b159cbfafe1f0
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !Ref SecurityGroupWeb
+        - !Ref SecurityGroupSSH
+      KeyName: mykeypair
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          echo "<html><body><h1>Hello, World!</h1></body></html>" > /var/www/html/index.html
+          service httpd start
+          chkconfig httpd on
+      Tags:
+        - Key: Name
+          Value: MyInstance
