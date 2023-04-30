@@ -9,6 +9,10 @@ Resources:
       Tags:
         - Key: Name
           Value: CloudForceVPC
+  MyKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: my-key-pair
 
   CloudForcePublic:
     Type: AWS::EC2::Subnet
@@ -63,22 +67,35 @@ Resources:
   AssociatePublic1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref PublicSubnet1
+      SubnetId: !Ref CloudForcePublic
       RouteTableId: !Ref RouteTablePublic
 
   SecurityGroupWeb:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow HTTP access from anywhere
-      VpcId: !Ref VPC
+      VpcId: !Ref CloudForceVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
 
   SecurityGroupSSH:
     Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access to the instance
+      VpcId: !Ref CloudForceVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
 
   MyInstance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: ami-0c55b159cbfafe1f0
+      ImageId: ami-02396cdd13e9a1257
       InstanceType: t2.micro
       SecurityGroupIds:
         - !Ref SecurityGroupWeb
@@ -97,4 +114,4 @@ Resources:
           systemctl restart httpd
       Tags:
         - Key: Name
-          Value: MyInstance
+          Value: CloudForceEC2
