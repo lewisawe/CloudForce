@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Create a VPC with public and private subnets, security groups, and EC2 instances that run a web application on startup
+Description: CloudForce 004
 
 Resources:
   VPC:
