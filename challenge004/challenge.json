@@ -87,9 +87,14 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          echo "<html><body><h1>Hello, World!</h1></body></html>" > /var/www/html/index.html
-          service httpd start
-          chkconfig httpd on
+          yum update -y
+          yum install -y httpd git
+          systemctl start httpd
+          systemctl enable httpd
+          cd /var/www/html
+          rm -rf *
+          git clone https://github.com/lewisawe/cloudForceWebSawe.git .
+          systemctl restart httpd
       Tags:
         - Key: Name
           Value: MyInstance
