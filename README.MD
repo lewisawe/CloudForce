@@ -1,23 +1,20 @@
-Weekly Challenge 1
+# CloudForce SkY 
 
-Create a CloudFormation template that launches 10 EC2 instances and sets up an Apache web server within a VPC. The template should also create two subnets within the VPC, one for public-facing resources and one for private resources. The EC2 instances should be placed in the private subnet and the Apache web server should be accessible from the Internet through a public subnet.
+## Introduction:
+Welcome to our cloud community! We are a group of individuals who are passionate about cloud computing and are committed to helping others learn and empower themselves with cloud services. Our community is open to everyone, regardless of your experience level with cloud computing. Whether you're a beginner or an expert, there's something for everyone here.
 
-Guidelines
+## Vision and Mission:
+Our vision is to create a community where everyone has access to the knowledge and resources needed to succeed with cloud computing. Our mission is to empower individuals to learn and advance their careers through the use of cloud services. We believe that by sharing our knowledge and expertise, we can help others achieve their goals and make a positive impact in their lives.
 
-Guidelines:
+## Community Features:
+- Regular events and meetups to learn and network with other cloud enthusiasts
+- Online forums and discussion boards to ask questions and share knowledge
+- Resources and tutorials to help you get started with cloud computing
+- Mentoring programs to connect you with experienced cloud professionals
+- Job boards and career resources to help you advance your cloud career
 
-The VPC should have a CIDR block of 10.0.0.0/16.
+## Membership:
+Membership in our community is free and open to anyone who is interested in cloud computing. We encourage you to join our community and get involved in our events and programs. By joining our community, you'll have access to a wealth of knowledge and resources to help you succeed with cloud computing.
 
-The public subnet should have a CIDR block of 10.0.1.0/24 and the private subnet should have a CIDR block of 10.0.2.0/24.
-
-The EC2 instances should use an Amazon Linux 2 AMI and should be t2.micro type.
-
-The EC2 instances should be accessible through SSH using an existing key pair.
-
-The Apache web server should be installed on the EC2 instances and should display a default "Welcome to Apache" page when accessed from a web browser.
-
-The CloudFormation template should include the creation of all necessary security groups, network interfaces, and routing tables.
-
-The CloudFormation template should be written in JSON or YAML.
-
-The 10 EC2 instances should be created in an Auto Scaling Group and be behind a Load Balancer to handle incoming traffic.
+## Conclusion:
+At our cloud community, we're passionate about helping others learn and empower themselves with cloud services. We believe that cloud computing has the power to transform industries and change lives, and we want to be a part of that change. Whether you're just getting started with cloud computing or you're an experienced professional, we invite you to join our community and be a part of something great.
