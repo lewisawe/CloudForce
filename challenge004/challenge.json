@@ -2,73 +2,53 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: CloudForce 004
 
 Resources:
-  VPC:
+  CloudForceVPC:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: 10.0.0.0/16
+      CidrBlock: 172.16.0.0/16
       Tags:
         - Key: Name
-          Value: MyVPC
+          Value: CloudForceVPC
 
-  PublicSubnet1:
+  CloudForcePublic:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.1.0/24
+      VpcId: !Ref CloudForceVPC
+      CidrBlock: 172.16.0.0/17
       AvailabilityZone: us-east-1a
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: PublicSubnet1
+          Value: CloudForcePublic
 
-  PublicSubnet2:
+  CloudForcePrivate:
     Type: AWS::EC2::Subnet
     Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.2.0/24
-      AvailabilityZone: us-east-1b
-      MapPublicIpOnLaunch: true
-      Tags:
-        - Key: Name
-          Value: PublicSubnet2
-
-  PrivateSubnet1:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.3.0/24
+      VpcId: !Ref CloudForceVPC
+      CidrBlock: 172.16.120.0/17
       AvailabilityZone: us-east-1a
       Tags:
         - Key: Name
-          Value: PrivateSubnet1
+          Value: CloudForcePrivate
 
-  PrivateSubnet2:
-    Type: AWS::EC2::Subnet
-    Properties:
-      VpcId: !Ref VPC
-      CidrBlock: 10.0.4.0/24
-      AvailabilityZone: us-east-1b
-      Tags:
-        - Key: Name
-          Value: PrivateSubnet2
 
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: MyInternetGateway
+          Value: CloudForceIG
 
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref CloudForceVPC
       InternetGatewayId: !Ref InternetGateway
 
   RouteTablePublic:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref VPC
+      VpcId: !Ref CloudForceVPC
       Tags:
         - Key: Name
           Value: PublicRouteTable
@@ -84,12 +64,6 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet1
-      RouteTableId: !Ref RouteTablePublic
-
-  AssociatePublic2:
-    Type: AWS::EC2::SubnetRouteTableAssociation
-    Properties:
-      SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref RouteTablePublic
 
   SecurityGroupWeb:
