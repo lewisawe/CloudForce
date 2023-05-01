@@ -27,3 +27,9 @@ This challenge will help AWS Cloud Engineers to demonstrate their skills in auto
 aws cloudformation create-stack --stack-name CloudForceStack --template-body file://CloudForce/challenge004/challenge.yaml
 
 ```
+
+Delete Stack
+```
+aws cloudformation delete-stack \
+    --stack-name CloudForceStack
+```
