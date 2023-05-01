@@ -6,6 +6,8 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: 172.16.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
       Tags:
         - Key: Name
           Value: CloudForceVPC
@@ -18,7 +20,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref CloudForceVPC
-      CidrBlock: 172.16.0.0/17
+      CidrBlock: 172.16.0.0/20
       AvailabilityZone: us-east-1a
       MapPublicIpOnLaunch: true
       Tags:
@@ -29,8 +31,9 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref CloudForceVPC
-      CidrBlock: 172.16.120.0/17
+      CidrBlock: 172.16.128.0/20
       AvailabilityZone: us-east-1a
+      MapPublicIpOnLaunch: false
       Tags:
         - Key: Name
           Value: CloudForcePrivate
@@ -70,48 +73,39 @@ Resources:
       SubnetId: !Ref CloudForcePublic
       RouteTableId: !Ref RouteTablePublic
 
-  SecurityGroupWeb:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Allow HTTP access from anywhere
-      VpcId: !Ref CloudForceVPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-
-  SecurityGroupSSH:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Enable SSH access to the instance
-      VpcId: !Ref CloudForceVPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: 0.0.0.0/0
-
   MyInstance:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-02396cdd13e9a1257
       InstanceType: t2.micro
+      subnetId: !Ref CloudForcePublic
       SecurityGroupIds:
-        - !Ref SecurityGroupWeb
-        - !Ref SecurityGroupSSH
+        - !Ref InstanceSecurityGroup
       KeyName: mykeypair
       UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash
-          yum update -y
-          yum install -y httpd git
-          systemctl start httpd
-          systemctl enable httpd
-          cd /var/www/html
-          rm -rf *
-          git clone https://github.com/lewisawe/cloudForceWebSawe.git .
-          systemctl restart httpd
+        #!/bin/bash
+        yum update -y
+        yum install -y httpd git
+        systemctl start httpd
+        systemctl enable httpd
+        cd /var/www/html
+        rm -rf *
+        git clone https://github.com/lewisawe/cloudForceWebSawe.git .
+        systemctl restart httpd
       Tags:
         - Key: Name
           Value: CloudForceEC2
+      
+  InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH and HTTP access via port 22 and
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: http
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
