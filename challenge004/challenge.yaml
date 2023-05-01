@@ -78,11 +78,10 @@ Resources:
     Properties:
       ImageId: ami-02396cdd13e9a1257
       InstanceType: t2.micro
-      subnetId: !Ref CloudForcePublic
       SecurityGroupIds:
         - !Ref InstanceSecurityGroup
-      KeyName: mykeypair
-      UserData:
+      KeyName: my-key-pair
+      UserData: !Base64 | 
         #!/bin/bash
         yum update -y
         yum install -y httpd git
@@ -105,7 +104,7 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: 0.0.0.0/0
-        - IpProtocol: http
+        - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
